@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+   <style>
+      .container {
+    margin: 100px auto;
+    max-width: 500px;
+    min-height: 100px;
+    text-align: center;
+    background-color: #b6b6b6;
+    border-radius: 15px;
+ }
+
+.info{
+    width: 300px;
+}
+
+h1{
+    padding-top: 7px;
+}
+
+p{
+    font-size: 20px;
+    border: rgb(129, 129, 129) solid 3px;
+    width: 200px;
+    margin: 20px auto 20px auto;
+}
+
+b{
+    font-size: 22px;
+}
+
+#numbers{
+    padding-bottom: 10px;
+}
+   </style>
+</head>
+
+<body>
+   <div class="container">
+      <h1>Get your loto number :D</h1>
+      <!-- <p>And the chaens of winig is 1 to 16,273,488</p> -->
+      <!-- <p>Get your number</p> -->
+
+      <button onclick="show()">Create</button>
+
+      <select id="columns">
+      </select>
+
+      <br>
+
+      <div id="numbers">
+        <p class="info">Just click on the create button to get the numbers</p>
+      </div>
+
+   </div>
+   <script>
+      const columnsElement = document.getElementById('columns')
+const numbersElement = document.getElementById('numbers')
+
+// creat the option element
+for (let i = 1; i <= 14; i++) {
+   const option = document.createElement('option')
+   option.value = i;
+   option.innerHTML = i;
+
+   columnsElement.appendChild(option);
+}
+
+function randomNum(max, min) {
+   return Math.floor(Math.random() * (max - min) + min);
+}
+
+// get num and check if in the Array
+function getAndCheck(arr, num) {
+
+   if ( arr.length ) {
+      for (let i = 0; i <= arr.length; i++) {
+         if (arr[i] == num) {
+            return getAndCheck(arr, randomNum(37, 1));
+         }
+      }
+   }
+   return num;
+}
+
+// creates one column of number
+function createTable(num, numbersArr, repeatingNums){
+
+   for (let z = 0; z <= 6; z++) {
+         
+      if (z >= 6) {
+         num = '<b>' + randomNum(7, 1) + '</b>';
+      } else {
+         num = getAndCheck(repeatingNums, randomNum(37, 1)) + ' '; 
+      }
+      numbersArr.push(num);
+      repeatingNums.push(num);
+   }
+}
+
+// return 
+function renderNum(arr){
+   arr.sort((a, b)=> a - b);
+   let tableNum = '';
+
+   for(let i = 0; i <= arr.length-1; i++){
+      tableNum += arr[i];
+   }
+   return tableNum;
+}
+
+function inArray(arr, number){
+
+   for(let i = 0;i <= arr.length; i++ ){
+      if(arr[i] == number) return true
+   }
+
+   return false
+}
+
+/* 
+****************************
+   main engine
+****************************
+*/
+function show() {
+   numbersElement.innerHTML = '';
+   const x = columnsElement.value;
+   let repeatingNums = [];
+   let theNums = [];
+   let num,numbers = ''
+
+   // creates tables 
+   for (let i = 1; i <= x; i++) {
+      const p = document.createElement('p')
+      const numbersArr = []
+
+      createTable(num, numbersArr, repeatingNums);
+      numbers = renderNum(numbersArr);
+      
+      // cheak if the numbers is exists
+      while(inArray(theNums,numbers)){
+         
+         createTable(num, numbersArr, repeatingNums);
+         numbers = renderNum(numbersArr);
+      }
+
+
+
+      // add to array to not repeat the same numbers
+      theNums[i-1] = numbers;
+      // add to the paragraph
+      p.innerHTML = theNums[i-1]
+      
+      // create one table
+      numbersElement.appendChild(p);
+
+      // restart
+      
+      numbers = ''
+      repeatingNums = []
+   }
+}
+
+   </script>
+</body>
+
+</html>
